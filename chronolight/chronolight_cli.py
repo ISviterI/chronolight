@@ -1,5 +1,5 @@
 import typer
-from chronolight import delay
+from .core import delay
 
 app = typer.Typer()
 tasks = {}
@@ -24,6 +24,3 @@ def remove(name: str):
         typer.echo(f"Task {name} removed")
     else:
         typer.echo(f"Task {name} not found")
-
-if __name__ == "__main__":
-    app()

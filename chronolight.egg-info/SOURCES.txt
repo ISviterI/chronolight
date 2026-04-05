@@ -1,6 +1,7 @@
 README.md
 setup.py
 chronolight/__init__.py
+chronolight/chronolight_cli.py
 chronolight/core.py
 chronolight.egg-info/PKG-INFO
 chronolight.egg-info/SOURCES.txt
