@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="chronolight",
-    version="1.2.7",
+    version="1.2.8",
     author="Sviter",
     description="A simple library for easily working with time",
     url="https://github.com/ISviterI/chronolight",

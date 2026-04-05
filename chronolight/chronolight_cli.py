@@ -49,7 +49,7 @@ def timer(seconds:int, message:str="haha noob, time's upp!!!", notify:bool=True)
         notification.notify(
             title="Chronolight Timer",
             message=message,
-            timeout=5
+            timeout=60
         )
 
 
@@ -57,8 +57,6 @@ def timer(seconds:int, message:str="haha noob, time's upp!!!", notify:bool=True)
 @app.command()
 def progress(seconds: int, message: str = "Progressing..."):
     """Progress bar with time limit"""
-    typer.echo(message)
-
     with tqdm.tqdm(total=seconds, desc=message, unit="s") as pbar:
         for _ in range(seconds):
             time.sleep(1)
