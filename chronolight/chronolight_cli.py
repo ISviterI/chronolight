@@ -1,96 +1,67 @@
+import subprocess
 import typer
-import threading
-from datetime import datetime, timedelta
+import time
+import tqdm
+from plyer import notification
 from chronolight import delay
-
 app = typer.Typer()
-tasks = {}
 
 
 @app.command()
-def add(name: str, delay_seconds: int, repeat: int = 1):
-    """Add a delayed task (optionally repeatable)"""
+def execute(seconds: int, command: str, repeat: int = 1):
+    """Execute a command after delay"""
 
-    def task():
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] Task {name} executed")
+    def run():
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        if result.stdout:
+            print(result.stdout)
+        if result.stderr:
+            print(result.stderr)
 
-    def schedule(remaining):
-        timer = threading.Timer(delay_seconds, task)
-        timer.start()
-        tasks[name] = {"timer": timer, "remaining": remaining - 1 if remaining > 1 else 0}
+    typer.echo(f"Will execute '{command}' after {str(seconds)} seconds")
 
-        if remaining > 1:
-            timer2 = threading.Timer(delay_seconds, lambda: schedule(remaining - 1))
-            timer2.start()
+    if repeat > 1:
+        remaining = repeat
 
-    schedule(repeat)
-    typer.echo(f"Task {name} added (will run {repeat} time(s) every {delay_seconds}s)")
+        def schedule():
+            nonlocal remaining
+            if remaining <= 0:
+                return
+            delay(seconds, run)
+            delay(seconds, schedule)
+            remaining -= 1
 
-
-@app.command()
-def list():
-    """List all scheduled tasks"""
-    if not tasks:
-        typer.echo("No scheduled tasks")
-        return
-
-    for name, data in tasks.items():
-        remaining = data.get("remaining", 0)
-        status = f"will run {remaining} more time(s)" if remaining > 0 else "pending"
-        typer.echo(f"{name}: {status}")
-
-
-@app.command()
-def remove(name: str):
-    """Remove a scheduled task"""
-    if name in tasks:
-        tasks[name].get("timer").cancel()
-        tasks.pop(name)
-        typer.echo(f"Task {name} removed")
+        schedule()
     else:
-        typer.echo(f"Task {name} not found")
-
-
-@app.command()
-def clear():
-    """Remove all tasks"""
-    for name in list(tasks.keys()):
-        tasks[name].get("timer").cancel()
-        tasks.clear()
-    typer.echo("All tasks cleared")
-
+        delay(seconds, run)
 
 @app.command()
-def run(seconds: int, message: str = "Time's up!"):
-    """Simple timer with message"""
+def timer(seconds: int, message: str = "Time's up!", notify: bool = True):
+    """Timer with system notification"""
     typer.echo(f"Timer started for {seconds} seconds...")
-    delay(seconds, lambda: print(f"[{datetime.now().strftime('%H:%M:%S')}] {message}"))
+    for remaining in range(seconds, 0, -1):
+        typer.echo(f"\rTime remaining: {remaining} seconds", nl=False)
+        time.sleep(1)
 
+    typer.echo(f"\n{message}")
 
-@app.command()
-def repeat(seconds: int, times: int, message: str = "Repeat!"):
-    """Repeat a message every N seconds"""
-    typer.echo(f"Will repeat '{message}' every {seconds} seconds, {times} times")
+    if notify:
+        notification.notify(
+            title="Chronolight Timer",
+            message=message,
+            timeout=5
+        )
 
-    def task():
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] {message}")
-
-    remaining = times
-
-    def schedule():
-        nonlocal remaining
-        if remaining <= 0:
-            return
-        timer = threading.Timer(seconds, task)
-        timer.start()
-        timer2 = threading.Timer(seconds, schedule)
-        timer2.start()
-        remaining -= 1
-
-    schedule()
 
 
 @app.command()
-def version():
-    """Show version"""
-    typer.echo("chronolight 1.2.4")
+def progress(seconds: int, message: str = "Progressing..."):
+    """Progress bar with time limit"""
+    typer.echo(message)
+
+    with tqdm(total=seconds, desc="Progress", unit="s") as pbar:
+        for _ in range(seconds):
+            time.sleep(1)
+            pbar.update(1)
+
+    typer.echo(f"Done after {seconds} seconds!")
