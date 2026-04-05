@@ -4,7 +4,7 @@ setup(
     name="chronolight",
     version="1.1.1",
     author="Sviter",
-    description="A simple library for easily working with time series data",
+    description="A simple library for easily working with time",
     url="https://github.com/ISviterI/chronolight",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
