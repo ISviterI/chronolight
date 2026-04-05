@@ -1,8 +1,9 @@
 Metadata-Version: 2.4
 Name: chronolight
-Version: 1.0.0
-Summary: A simple library for working with timelines and delayed calls
-Author: IWiterl
+Version: 1.0.1
+Summary: A simple library for easily working with time series data
+Home-page: https://github.com/ISviterI/chronolight
+Author: Sviter
 License: MIT
 Project-URL: Homepage, https://github.com/ISviterI/chronolight
 Project-URL: Discord, https://discord.gg/MXv3KTFmPE
@@ -16,6 +17,7 @@ Dynamic: author
 Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
+Dynamic: home-page
 Dynamic: license
 Dynamic: project-url
 Dynamic: requires-python
