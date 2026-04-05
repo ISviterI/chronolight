@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="chronolight",
-    version="1.0.0",
-    author="IWiterl",
+    version="1.0.1",
+    author="Sviter",
     description="A simple library for easily working with time series data",
     url="https://github.com/ISviterI/chronolight",
     long_description=open("README.md", encoding="utf-8").read(),
