@@ -4,7 +4,8 @@ setup(
     name="chronolight",
     version="1.0.0",
     author="IWiterl",
-    description="A simple library for working with timelines and delayed calls",
+    description="A simple library for easily working with time series data",
+    url="https://github.com/ISviterI/chronolight",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     project_urls={
