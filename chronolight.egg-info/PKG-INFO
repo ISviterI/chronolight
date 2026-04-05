@@ -1,7 +1,7 @@
 Metadata-Version: 2.4
 Name: chronolight
-Version: 1.0.1
-Summary: A simple library for easily working with time series data
+Version: 1.1.2
+Summary: A simple library for easily working with time
 Home-page: https://github.com/ISviterI/chronolight
 Author: Sviter
 License: MIT
@@ -9,6 +9,7 @@ Project-URL: Homepage, https://github.com/ISviterI/chronolight
 Project-URL: Discord, https://discord.gg/MXv3KTFmPE
 Project-URL: Wiki, https://github.com/ISviterI/chronolight/wiki
 Project-URL: Documentation, https://github.com/ISviterI/chronolight/wiki/Documentation
+Keywords: chronolight,chrono,timelines,delay,time,timeline,after,after_delay,afterdelay,light,chronos,simple,easy,easytoworkwith,easy_to_work_with,very_simple,cool,peak,bruh,lol,chains,chain,class,working_with_time
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Requires-Python: >=3.7
@@ -18,6 +19,7 @@ Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
 Dynamic: home-page
+Dynamic: keywords
 Dynamic: license
 Dynamic: project-url
 Dynamic: requires-python
