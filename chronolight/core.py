@@ -1,13 +1,26 @@
 import threading
 import time
+import asyncio
+import inspect
 
 
 def delay(seconds, func, *args, **kwargs):
-    def wrapper():
-        time.sleep(seconds)
-        result = func(*args, **kwargs)
-    thread = threading.Thread(target=wrapper)
-    thread.start()
+    if inspect.iscoroutinefunction(func):
+        async def async_wrapper():
+            await asyncio.sleep(seconds)
+            await func(*args, **kwargs)
+        try:
+            loop = asyncio.get_running_loop()
+            asyncio.create_task(async_wrapper())
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            threading.Thread(target=lambda: loop.run_until_complete(async_wrapper())).start()
+    else:
+        def sync_wrapper():
+            time.sleep(seconds)
+            func(*args, **kwargs)
+
+        threading.Thread(target=sync_wrapper).start()
 def after_delay(seconds, func, *args, **kwargs):
     res_container = []
     def wrapper():
