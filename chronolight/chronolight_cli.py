@@ -36,7 +36,7 @@ def execute(seconds: int, command: str, repeat: int = 1):
         delay(seconds, run)
 
 @app.command()
-def timer(seconds: int, message: str = "Time's up!", notify: bool = True):
+def timer(seconds:int, message:str="haha noob, time's upp!!!", notify:bool=True):
     """Timer with system notification"""
     typer.echo(f"Timer started for {seconds} seconds...")
     for remaining in range(seconds, 0, -1):
@@ -59,7 +59,7 @@ def progress(seconds: int, message: str = "Progressing..."):
     """Progress bar with time limit"""
     typer.echo(message)
 
-    with tqdm(total=seconds, desc="Progress", unit="s") as pbar:
+    with tqdm.tqdm(total=seconds, desc=message, unit="s") as pbar:
         for _ in range(seconds):
             time.sleep(1)
             pbar.update(1)
