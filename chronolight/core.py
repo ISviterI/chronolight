@@ -88,11 +88,11 @@ class Timeline:
     def call(self,function,*args,**kwargs):
         self.actions.append(["call",function,args,kwargs])
         if self.logging:
-            print(f"added action: {str(["call",function,args,kwargs])}")
+            print(f"added action: [call,{str(function)},{str(args)},{str(kwargs)}]")
     def wait(self,seconds:float):
         self.actions.append(["wait",seconds])
         if self.logging:
-            print(f"added action: {str(["wait",seconds])}")
+            print(f"added action: [wait,{str(seconds)}] ")
     def run(self,threaded:bool=False):
         current_delay = 0
         for act in self.actions:
@@ -148,14 +148,16 @@ class AsyncTimeline:
         self.actions = []
         self.logging = logging
         self.paused = False
-    async def call(self,function,*args,**kwargs):
-        self.actions.append(["call",function,args,kwargs])
+
+    async def call(self, function, *args, **kwargs):
+        self.actions.append(["call", function, args, kwargs])
         if self.logging:
-            print(f"added action: {str(["call",function,args,kwargs])}")
-    async def wait(self,seconds:float):
-        self.actions.append(["wait",seconds])
+            print(f"added action: [call,{str(function)},{str(args)},{str(kwargs)}]")
+
+    async def wait(self, seconds: float):
+        self.actions.append(["wait", seconds])
         if self.logging:
-            print(f"added action: {str(["wait",seconds])}")
+            print(f"added action: [wait,{str(seconds)}] ")
     async def run(self,threaded:bool=False):
         current_delay = 0
         for act in self.actions:

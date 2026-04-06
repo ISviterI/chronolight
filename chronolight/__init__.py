@@ -1,1 +1,1 @@
-from .core import Timeline,delay,Chain,after_delay
+from .core import Timeline,delay,Chain,after_delay,AsyncTimeline
