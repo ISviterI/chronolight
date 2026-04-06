@@ -23,7 +23,8 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "chronolight=chronolight.chronolight_cli:app"
+            "chronolight=chronolight.chronolight_cli:app",
+            "cl=chronolight.chronolight_cli:app",
         ]
     },
     keywords="chronolight,chrono,timelines,delay,time,timeline,after,after_delay,afterdelay,light,chronos,simple,easy,easytoworkwith,easy_to_work_with,very_simple,cool,peak,bruh,lol,chains,chain,class,working_with_time",
