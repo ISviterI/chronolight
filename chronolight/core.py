@@ -37,6 +37,13 @@ def after_delay(seconds, func, *args, **kwargs):
     return res
 
 
+def on_error(func, callback, *args, **kwargs):
+    try:
+        return func(*args, **kwargs)
+    except Exception as e:
+        callback(e)
+
+
 class Chain:
     def __init__(self, seconds:float,function,logging:bool = False,*args,**kwargs):
         self.logging = logging
@@ -78,6 +85,8 @@ class Chain:
                 print(f"activated: {str(function)}")
                 print(f"new last:{self.last}")
         return self
+
+
 
 
 class Timeline:
