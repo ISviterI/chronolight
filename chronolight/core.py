@@ -126,4 +126,83 @@ class Timeline:
         self.paused = True
     def resume(self):
         self.paused = False
+    def visualise(self):
+        current_delay = 0
+        print("Timeline visualise:")
+        for act in self.actions:
+            if act[0] == "wait":
+                text = f"{str(current_delay)} {str(act[0])}: {str(act[1])}"
+                if len(act) > 2:
+                    text += f", {str(act[2])} ({str(act[3])})"
+                print(text)
+                current_delay += act[1]
+            else:
+                text = f"{str(current_delay)} {str(act[0])}: {str(act[1])}"
+                if len(act) > 2:
+                    text += f", {str(act[2])} ({str(act[3])})"
+                print(text)
+        print("Visualise end")
+
+class AsyncTimeline:
+    def __init__(self, logging:bool = False):
+        self.actions = []
+        self.logging = logging
+        self.paused = False
+    async def call(self,function,*args,**kwargs):
+        self.actions.append(["call",function,args,kwargs])
+        if self.logging:
+            print(f"added action: {str(["call",function,args,kwargs])}")
+    async def wait(self,seconds:float):
+        self.actions.append(["wait",seconds])
+        if self.logging:
+            print(f"added action: {str(["wait",seconds])}")
+    async def run(self,threaded:bool=False):
+        current_delay = 0
+        for act in self.actions:
+            while self.paused:
+                time.sleep(0.1)
+            if act[0] == "call":
+                if threaded:
+                    delay(current_delay, act[1], *act[2], **act[3])
+                    if self.logging:
+                        print(f"called threaded: {str(act[1])}")
+                else:
+                    time.sleep(current_delay)
+                    act[1](*act[2], **act[3])
+                    if self.logging:
+                        print(f"called: {str(act[1])}")
+            elif act[0] == "wait":
+                if threaded:
+                    current_delay += act[1]
+                    if self.logging:
+                        print(f"waited threaded: {str(act[1])}")
+                else:
+                    time.sleep(act[1])
+                    if self.logging:
+                        print(f"waited: {str(act[1])}")
+    async def repeat(self,times:int=2,threaded:bool=False):
+        for i in range(times):
+            await self.run(threaded)
+    async def reverse(self):
+        self.actions.reverse()
+    async def pause(self):
+        self.paused = True
+    async def resume(self):
+        self.paused = False
+    async def visualise(self):
+        current_delay = 0
+        print("Timeline visualise:")
+        for act in self.actions:
+            if act[0] == "wait":
+                text = f"{str(current_delay)} {str(act[0])}: {str(act[1])}"
+                if len(act) > 2:
+                    text += f", {str(act[2])} ({str(act[3])})"
+                print(text)
+                current_delay += act[1]
+            else:
+                text = f"{str(current_delay)} {str(act[0])}: {str(act[1])}"
+                if len(act) > 2:
+                    text += f", {str(act[2])} ({str(act[3])})"
+                print(text)
+        print("Visualise end")
 
