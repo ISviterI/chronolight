@@ -142,6 +142,11 @@ class Timeline:
                     text += f", {str(act[2])} ({str(act[3])})"
                 print(text)
         print("Visualise end")
+    def copy(self):
+        newTimeline = Timeline()
+        newTimeline.logging = self.logging
+        newTimeline.actions = self.actions
+        return newTimeline
 
 class AsyncTimeline:
     def __init__(self, logging:bool = False):
@@ -207,4 +212,9 @@ class AsyncTimeline:
                     text += f", {str(act[2])} ({str(act[3])})"
                 print(text)
         print("Visualise end")
+    async def copy(self):
+        newTimeline = Timeline()
+        newTimeline.logging = self.logging
+        newTimeline.actions = self.actions
+        return newTimeline
 
