@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="chronolight",
-    version="1.4.2",
+    version="1.4.3",
     author="Sviter",
     description="A simple library for easily working with time",
     url="https://github.com/ISviterI/chronolight",
@@ -22,10 +22,10 @@ setup(
         "License :: OSI Approved :: MIT License",
     ],
     entry_points={
-        "console_scripts": [
-            "chronolight=chronolight.chronolight_cli:app",
-            "cl=chronolight.chronolight_cli:app",
-        ]
+        #"console_scripts": [
+        #    "chronolight=chronolight.chronolight_cli:app",
+        #    "cl=chronolight.chronolight_cli:app",
+        #]
     },
     keywords="chronolight,chrono,timelines,delay,time,timeline,after,after_delay,afterdelay,light,chronos,simple,easy,easytoworkwith,easy_to_work_with,very_simple,cool,peak,bruh,lol,chains,chain,class,working_with_time",
     install_requires=['typer','plyer',"tqdm"]
