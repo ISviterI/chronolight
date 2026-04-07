@@ -209,34 +209,49 @@ class Timeline:
         return newTimeline
     def add_eventemitter(self,eventemitter):
         self.eventemitter = eventemitter
-    def every(self,seconds:float,func=None,times:int=1,until=None,interval:float=1,*args,**kwargs):
+    def every(self,seconds:float,func=None,times:int=1,until=None,*args,**kwargs):
         if not until:
             for _ in range(times):
                 if func:
                     self.call(func, *args, **kwargs)
                 self.wait(seconds)
         else:
-            self.actions.append(["every",until,func,args,kwargs,interval])
+            self.actions.append(["every",until,func,args,kwargs,seconds])
         return self
 
 
 class AsyncTimeline:
-    def __init__(self, logging:bool = False):
+    def __init__(self, logging: bool = False):
+        self.eventemitter = None
         self.actions = []
         self.logging = logging
         self.paused = False
+        self.last = ""
 
     async def call(self, function, *args, **kwargs):
         self.actions.append(["call", function, args, kwargs])
         if self.logging:
             print(f"added action: [call,{str(function)},{str(args)},{str(kwargs)}]")
+        if self.eventemitter:
+            self.eventemitter.emit("call", function, *args, **kwargs)
 
     async def wait(self, seconds: float):
         self.actions.append(["wait", seconds])
         if self.logging:
             print(f"added action: [wait,{str(seconds)}] ")
-    async def run(self,threaded:bool=False):
+        if self.eventemitter:
+            self.eventemitter.emit("wait", seconds)
+
+    async def run(self, threaded: bool = False):
+        if self.eventemitter:
+            self.eventemitter.emit("run", threaded)
         current_delay = 0
+        everyflag = True
+
+        def trueeveryflag():
+            nonlocal everyflag
+            everyflag = True
+
         for act in self.actions:
             while self.paused:
                 time.sleep(0.1)
@@ -259,15 +274,37 @@ class AsyncTimeline:
                     time.sleep(act[1])
                     if self.logging:
                         print(f"waited: {str(act[1])}")
-    async def repeat(self,times:int=2,threaded:bool=False):
+            elif act[0] == "every":
+                if not act[5]:
+                    act[5] = 1
+                while True:
+                    if act[1]():
+                        break
+                    if threaded:
+                        if everyflag:
+                            everyflag = False
+                            current_delay += 1
+                            delay(act[5], trueeveryflag)
+                            if act[2]:
+                                delay(1, act[2], *act[3], **act[4])
+                    else:
+                        if act[2]:
+                            act[2](*act[3], **act[4])
+                        time.sleep(act[5])
+
+    async def repeat(self, times: int = 2, threaded: bool = False):
         for i in range(times):
             await self.run(threaded)
+
     async def reverse(self):
         self.actions.reverse()
+
     async def pause(self):
         self.paused = True
+
     async def resume(self):
         self.paused = False
+
     async def visualise(self):
         current_delay = 0
         print("Timeline visualise:")
@@ -284,9 +321,23 @@ class AsyncTimeline:
                     text += f", {str(act[2])} ({str(act[3])})"
                 print(text)
         print("Visualise end")
+
     async def copy(self):
         newTimeline = Timeline()
         newTimeline.logging = self.logging
         newTimeline.actions = self.actions
         return newTimeline
+
+    async def add_eventemitter(self, eventemitter):
+        self.eventemitter = eventemitter
+
+    async def every(self, seconds: float, func=None, times: int = 1, until=None, *args, **kwargs):
+        if not until:
+            for _ in range(times):
+                if func:
+                    await self.call(func, *args, **kwargs)
+                await self.wait(seconds)
+        else:
+            self.actions.append(["every", until, func, args, kwargs, seconds])
+        return self
 
