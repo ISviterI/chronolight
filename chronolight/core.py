@@ -37,11 +37,32 @@ def after_delay(seconds, func, *args, **kwargs):
     return res
 
 
-def on_error(func, callback, *args, **kwargs):
+def on_error(func, callback=None, *args, **kwargs):
     try:
         return func(*args, **kwargs)
     except Exception as e:
-        callback(e)
+        if callback:
+            try:
+                callback(e)
+            except:
+                pass
+
+
+class EventEmitter:
+    def __init__(self):
+        self.events = {}
+
+    def on(self, name: str, func):
+        if name not in self.events:
+            self.events[name] = []
+        self.events[name].append(func)
+        return self
+
+    def emit(self, name: str, *args, **kwargs):
+        if name in self.events:
+            for func in self.events[name]:
+                func(*args, **kwargs)
+        return self
 
 
 class Chain:
