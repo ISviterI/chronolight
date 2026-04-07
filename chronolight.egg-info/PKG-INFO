@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: chronolight
-Version: 1.4.3
+Version: 1.4.4
 Summary: A simple library for easily working with time
 Home-page: https://github.com/ISviterI/chronolight
 Author: Sviter
@@ -14,9 +14,6 @@ Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
-Requires-Dist: typer
-Requires-Dist: plyer
-Requires-Dist: tqdm
 Dynamic: author
 Dynamic: classifier
 Dynamic: description
@@ -25,7 +22,6 @@ Dynamic: home-page
 Dynamic: keywords
 Dynamic: license
 Dynamic: project-url
-Dynamic: requires-dist
 Dynamic: requires-python
 Dynamic: summary
 
