@@ -6,6 +6,5 @@ chronolight/core.py
 chronolight.egg-info/PKG-INFO
 chronolight.egg-info/SOURCES.txt
 chronolight.egg-info/dependency_links.txt
-chronolight.egg-info/entry_points.txt
 chronolight.egg-info/requires.txt
 chronolight.egg-info/top_level.txt
