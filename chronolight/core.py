@@ -112,6 +112,7 @@ class Chain:
 
 class Timeline:
     def __init__(self, logging:bool = False):
+        self.eventemitter = None
         self.actions = []
         self.logging = logging
         self.paused = False
@@ -119,11 +120,17 @@ class Timeline:
         self.actions.append(["call",function,args,kwargs])
         if self.logging:
             print(f"added action: [call,{str(function)},{str(args)},{str(kwargs)}]")
+        if self.eventemitter:
+            self.eventemitter.emit("call",function,*args,**kwargs)
     def wait(self,seconds:float):
         self.actions.append(["wait",seconds])
         if self.logging:
             print(f"added action: [wait,{str(seconds)}] ")
+        if self.eventemitter:
+            self.eventemitter.emit("wait",seconds)
     def run(self,threaded:bool=False):
+        if self.eventemitter:
+            self.eventemitter.emit("run",threaded)
         current_delay = 0
         for act in self.actions:
             while self.paused:
@@ -177,6 +184,8 @@ class Timeline:
         newTimeline.logging = self.logging
         newTimeline.actions = self.actions
         return newTimeline
+    def add_eventemitter(self,eventemitter):
+        self.eventemitter = eventemitter
 
 class AsyncTimeline:
     def __init__(self, logging:bool = False):
