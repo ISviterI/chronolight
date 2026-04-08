@@ -60,8 +60,17 @@ class EventEmitter:
 
     def emit(self, name: str, *args, **kwargs):
         if name in self.events:
-            for func in self.events[name]:
+            split = name.split(";")
+            for func in self.events[split[0]]:
                 func(*args, **kwargs)
+                if len(split) > 1:
+                    if split[1] == "once":
+                        self.events[split[0]] = []
+        return self
+    def once(self, name:str, func):
+        if name not in self.events:
+            self.events[name + ";once"] = []
+        self.events[name].append(func)
         return self
 
 
