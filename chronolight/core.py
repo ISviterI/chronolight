@@ -356,3 +356,9 @@ class AsyncTimeline:
             self.actions.append(["every", until, func, args, kwargs, seconds])
         return self
 
+    async def clear(self):
+        self.actions.clear()
+        return self
+    async def length(self):
+        return len(self.actions)
+
