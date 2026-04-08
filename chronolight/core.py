@@ -219,6 +219,12 @@ class Timeline:
             self.actions.append(["every",until,func,args,kwargs,seconds])
         return self
 
+    def clear(self):
+        self.actions.clear()
+        return self
+    def length(self):
+        return len(self.actions)
+
 
 class AsyncTimeline:
     def __init__(self, logging: bool = False):
