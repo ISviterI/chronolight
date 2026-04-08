@@ -3,12 +3,16 @@ import time
 import asyncio
 import inspect
 
+from packaging.utils import canonicalize_name
+
 
 def delay(seconds, func, *args, **kwargs):
+    cancelled = False
     if inspect.iscoroutinefunction(func):
         async def async_wrapper():
             await asyncio.sleep(seconds)
-            await func(*args, **kwargs)
+            if not cancelled:
+                await func(*args, **kwargs)
         try:
             loop = asyncio.get_running_loop()
             asyncio.create_task(async_wrapper())
@@ -18,9 +22,18 @@ def delay(seconds, func, *args, **kwargs):
     else:
         def sync_wrapper():
             time.sleep(seconds)
-            func(*args, **kwargs)
+            if not cancelled:
+                func(*args, **kwargs)
 
         threading.Thread(target=sync_wrapper).start()
+    class Delayfunc:
+        def __init__(self):
+            pass
+        def cancel(self):
+            nonlocal cancelled
+            cancelled = True
+            return self
+    return Delayfunc()
 def after_delay(seconds, func, *args, **kwargs):
     res_container = []
     def wrapper():
@@ -72,6 +85,9 @@ class EventEmitter:
             self.events[name + ";once"] = []
         self.events[name].append(func)
         return self
+    def off(self,name:str,func):
+        if self.events[name]:
+            self.events[name].remove(func)
 
 
 class Chain:
