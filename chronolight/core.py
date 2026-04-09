@@ -5,6 +5,12 @@ import inspect
 
 from packaging.utils import canonicalize_name
 
+def delayed(seconds):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            delay(seconds, func, *args, **kwargs)
+        return wrapper
+    return decorator
 
 def delay(seconds, func, *args, **kwargs):
     cancelled = False
@@ -49,16 +55,30 @@ def after_delay(seconds, func, *args, **kwargs):
         res = res_container[0]
     return res
 
-
-def on_error(func, callback=None, *args, **kwargs):
-    try:
-        return func(*args, **kwargs)
-    except Exception as e:
-        if callback:
-            try:
-                callback(e)
-            except:
-                pass
+def on_error(func=None, callback=None, *args, **kwargs):
+    if func:
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            if callback:
+                try:
+                    callback(e)
+                except:
+                    pass
+    else:
+        def decorator(func):
+            def wrapper(*args, **kwargs):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if callback:
+                        try:
+                            callback(e)
+                        except:
+                            pass
+            return wrapper
+        return decorator
+    return None
 
 
 class EventEmitter:
