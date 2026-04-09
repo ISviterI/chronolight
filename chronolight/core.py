@@ -1,11 +1,35 @@
-import threading
 import time
 import asyncio
 import inspect
+import functools
+import threading
 
-from packaging.utils import canonicalize_name
+def timeout(seconds):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            result = [None]
+            error = [None]
+            def target():
+                try:
+                    result[0] = func(*args, **kwargs)
+                except Exception as e:
+                    error[0] = e
+            thread = threading.Thread(target=target)
+            thread.start()
+            thread.join(seconds)
 
-def delayed(seconds):
+            if thread.is_alive():
+                raise TimeoutError(f"Function '{func.__name__}' timed out after {seconds} seconds")
+            if error[0]:
+                raise error[0]
+            return result[0]
+
+        return wrapper
+
+    return decorator
+
+def delayed(seconds:float):
     def decorator(func):
         def wrapper(*args, **kwargs):
             delay(seconds, func, *args, **kwargs)
